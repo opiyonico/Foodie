@@ -37,11 +37,14 @@ public class MainActivity extends AppCompatActivity {
         //Initilaize the reference to teh database
         databaseReference = FirebaseDatabase.getInstance().getReference().child("foods");
 
-        //Initialize teh food listview
+        //Initialize the food listview
         ListView foodList = (ListView)findViewById(R.id.food_list_view);
 
 
 
+        /*Initialize the listAdapter and set properties such as the model class, the food_layout and
+        the reference to the realtime database.
+         */
         listAdapter = new FirebaseListAdapter<Foods>(this,Foods.class,R.layout.food_card,databaseReference) {
             @Override
             protected void populateView(View v, Foods model, int position) {
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+
+        //Asssogn the list to the adapter
         foodList.setAdapter(listAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
