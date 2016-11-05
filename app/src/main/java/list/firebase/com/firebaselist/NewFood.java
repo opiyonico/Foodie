@@ -39,6 +39,11 @@ public class NewFood extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 newFood();
+
+                edit_name.setText("");
+                edit_local_name.setText("");
+                edit_description.setText("");
+                edit_nutritional_value.setText("");
             }
         });
 
@@ -49,12 +54,15 @@ public class NewFood extends AppCompatActivity {
 
     public void newFood(){
 
-        DatabaseReference newCafeteria = databaseReference.push();
+        String name = edit_name.getText().toString();
+        String local_name = edit_local_name.getText().toString();
+        String description = edit_description.getText().toString();
+        String nutritional_value = edit_nutritional_value.getText().toString();
 
-        newCafeteria.child("name").setValue(edit_name.getText());
-        newCafeteria.child("local_name").setValue(edit_local_name.getText());
-        newCafeteria.child("description").setValue(edit_description.getText());
-        newCafeteria.child("nutritional_value").setValue(edit_nutritional_value.getText());
+        databaseReference.push().setValue(new Foods(name,local_name,description,nutritional_value));
+
+
+
     }
 
 }
