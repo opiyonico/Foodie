@@ -18,6 +18,7 @@ public class NewFood extends AppCompatActivity {
 
     Button addFood;
 
+    //Create the database refernce object
     DatabaseReference databaseReference;
 
     @Override
@@ -27,19 +28,26 @@ public class NewFood extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Initialize the reference to the database pointing to a child(table) named foods
         databaseReference = FirebaseDatabase.getInstance().getReference().child("foods");
 
+
+        //Initialize the EditTexts
         edit_name = (EditText)findViewById(R.id.edit_food_name);
         edit_local_name = (EditText)findViewById(R.id.edit_local_name);
         edit_description = (EditText)findViewById(R.id.edit_description);
         edit_nutritional_value = (EditText)findViewById(R.id.edit_nutritional_value);
+
+        //Initialize the add food button
         addFood = (Button)findViewById(R.id.addFoodButton);
 
         addFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newFood();
+                newFood();//Call function that adds new foods to firebase on clicking the add food button
 
+
+                //Clear fields of
                 edit_name.setText("");
                 edit_local_name.setText("");
                 edit_description.setText("");
@@ -52,13 +60,17 @@ public class NewFood extends AppCompatActivity {
 
     }
 
+    //Function that adds the foods to the reatime firebase database
     public void newFood(){
-
+        //Assign the values of the EditTexts to Strings
         String name = edit_name.getText().toString();
         String local_name = edit_local_name.getText().toString();
         String description = edit_description.getText().toString();
         String nutritional_value = edit_nutritional_value.getText().toString();
 
+        //Add the food to the firebase database with a unique identifier
+        //This is done by use of the model
+        //The arguments passed in the Foods constructor should be the same
         databaseReference.push().setValue(new Foods(name,local_name,description,nutritional_value));
 
 

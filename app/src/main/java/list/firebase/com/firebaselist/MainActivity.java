@@ -33,9 +33,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        //Initilaize the reference to teh database
         databaseReference = FirebaseDatabase.getInstance().getReference().child("foods");
 
+        //Initialize teh food listview
         ListView foodList = (ListView)findViewById(R.id.food_list_view);
+
+
 
         listAdapter = new FirebaseListAdapter<Foods>(this,Foods.class,R.layout.food_card,databaseReference) {
             @Override
