@@ -1,8 +1,6 @@
 package list.firebase.com.firebaselist;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -11,6 +9,8 @@ import android.widget.EditText;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class NewFood extends AppCompatActivity {
 
@@ -29,7 +29,9 @@ public class NewFood extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Initialize the reference to the database pointing to a child(table) named foods
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("foods");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Antonio/foods");
+
+        getFoods();
 
 
         //Initialize the EditTexts
@@ -60,6 +62,10 @@ public class NewFood extends AppCompatActivity {
 
     }
 
+    public void getFoods(){
+
+    }
+
     //Function that adds the foods to the reatime firebase database
     public void newFood(){
         //Assign the values of the EditTexts to Strings
@@ -71,7 +77,10 @@ public class NewFood extends AppCompatActivity {
         //Add the food to the firebase database with a unique identifier
         //This is done by use of the model
         //The arguments passed in the Foods constructor should be the same
-        databaseReference.push().setValue(new Foods(name,local_name,description,nutritional_value));
+
+        Foods foods = new Foods(name,local_name,description,nutritional_value);
+
+        databaseReference.push().setValue(foods);
 
 
 

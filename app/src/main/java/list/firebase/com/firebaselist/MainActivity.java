@@ -1,30 +1,42 @@
 package list.firebase.com.firebaselist;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     DatabaseReference databaseReference;
-    private FirebaseListAdapter listAdapter;
+    private ListAdapter listAdapter;
+    ArrayList<GlycaemicFoodsWithIndex> foods;
+    private int setValue = 20;
+    ListView foodList;
+    FoodAdapter foodsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,37 +45,51 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        foods = new ArrayList<>();
 
-        //Initilaize the reference to teh database
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("foods");
+        //Initialize the reference to the database
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Antonio").child("proteins");
+
+        //Adding all the values of foods into an array list so that we can populate our listview
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Log.e("Running event listener","Inside");
+                for(DataSnapshot singleDataSnapshot: dataSnapshot.getChildren()){
+
+                    String foodIndex = singleDataSnapshot.getKey();
+                    //Log.e("Key",foodIndex);
+                    GlycaemicFoods glycaemicFoods = singleDataSnapshot.getValue(GlycaemicFoods.class);
+
+                    //Log.e("gIndex",glycaemicFoods.toString());
+
+                    GlycaemicFoodsWithIndex glycaemicFoodsWithIndex = new GlycaemicFoodsWithIndex(foodIndex,glycaemicFoods);
+                    if(glycaemicFoods.getGlycaemic_index() > setValue){
+                        foods.add(glycaemicFoodsWithIndex);
+                        Log.e("index",String.valueOf(glycaemicFoods.getGlycaemic_index()));
+                    }
+
+                    Log.d("Firebase ValuesX",foodIndex + " " + glycaemicFoods.getFood_name() + " " + glycaemicFoods.getBenefits() + " " + glycaemicFoods.getCalories() + " " + glycaemicFoods.getGlycaemic_index());
+                }
+                addFoods();
+                //foodsAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("databaseError",databaseError.toString());
+            }
+        });
+
+        FoodAdapter foodsAdapter = new FoodAdapter(this, foods);
+
 
         //Initialize the food listview
-        ListView foodList = (ListView)findViewById(R.id.food_list_view);
+        foodList = (ListView)findViewById(R.id.food_list_view);
+        foodList.setAdapter(foodsAdapter);
 
 
-
-        /*Initialize the listAdapter and set properties such as the model class, the food_layout and
-        the reference to the realtime database.
-         */
-        listAdapter = new FirebaseListAdapter<Foods>(this,Foods.class,R.layout.food_card,databaseReference) {
-            @Override
-            protected void populateView(View v, Foods model, int position) {
-                TextView name = (TextView)v.findViewById(R.id.food_name);
-                TextView local_name = (TextView)v.findViewById(R.id.local_name);
-                TextView description = (TextView)v.findViewById(R.id.description);
-                TextView nutritional_value = (TextView)v.findViewById(R.id.nutritional_value);
-
-
-                name.setText(model.getName());
-                local_name.setText(model.getLocal_name());
-                description.setText(model.getDescription());
-                nutritional_value.setText(model.getNutritional_value());
-            }
-        };
-
-
-        //Asssogn the list to the adapter
-        foodList.setAdapter(listAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,NewFood.class));
             }
         });
+    }
+
+    public void addFoods(){
+        foodsAdapter.addAll(foods);
     }
 
     @Override

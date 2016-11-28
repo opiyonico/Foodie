@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/benefits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Benefits" />
+
+    <TextView
+        android:id="@+id/calories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calories" />
+
+    <TextView
+        android:id="@+id/foodName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/foodType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/g_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Index" />
+
+    <TextView
+        android:id="@+id/local_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Local Name" />
+
+</LinearLayout>
