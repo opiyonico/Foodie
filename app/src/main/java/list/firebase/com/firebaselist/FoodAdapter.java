@@ -27,15 +27,15 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHolder>{
     Context mContext;
 
     public FoodAdapter(Context context, ArrayList<GlycaemicFoodsWithIndex> foods){
-        this.filteredFoods = foods;
-        this.mContext = context;
+        this.filteredFoods = foods;//Put the list that met the condition in another arraylist
+        this.mContext = context;//Pass the context
     }
 
     @Override
     public FoodHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fooditem,parent,false);
 
-        FoodHolder foodHolder = new FoodHolder(view);
+        FoodHolder foodHolder = new FoodHolder(view);//For every food in the list, use the layout set above
 
         return foodHolder;
     }
@@ -43,7 +43,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHolder>{
     @Override
     public void onBindViewHolder(FoodHolder holder, int position) {
         GlycaemicFoodsWithIndex indexedFoods = filteredFoods.get(position);
-
+        //For each food in the list, set the text in the view
         holder.tvBenefits.setText("Benefits:" + " " + indexedFoods.getBenefits());
         holder.tvLocalName.setText("Local Name:" + " " + indexedFoods.getLocal_name());
         holder.tvFoodName.setText("Food Name:" + " " + indexedFoods.getFood_name());
@@ -63,6 +63,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHolder>{
 
         public FoodHolder(View itemView) {
             super(itemView);
+            //Initalize all the textfields and views of the view you got above
             tvBenefits = (TextView) itemView.findViewById(R.id.tvBenefits);
             tvCalories = (TextView) itemView.findViewById(R.id.calories);
             tvFoodName = (TextView) itemView.findViewById(R.id.foodName);

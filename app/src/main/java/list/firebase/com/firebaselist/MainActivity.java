@@ -36,10 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     DatabaseReference databaseReference;
     private ListAdapter listAdapter;
-    ArrayList<GlycaemicFoodsWithIndex> foods;
-    private int setValue = 20;
-    ListView foodList;
-    FoodAdapter foodsAdapter;
+    ArrayList<GlycaemicFoodsWithIndex> foods;//Arraylist that holds the foods to be passed to the adapter
+    private int setValue = 20;//Setting the value of the value fo greater than manually
     RecyclerView recyclerView;
     TextView header;
 
@@ -51,38 +49,41 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         header = (TextView)findViewById(R.id.header);
+        //Setting the header at the top showing what set value is
         header.setText("Foods with Glycaemic Index > " + String.valueOf(setValue));
 
-        foods = new ArrayList<>();
-        final FoodAdapter foodsAdapter = new FoodAdapter(this, foods);
+        foods = new ArrayList<>();//Initialize the array list
+        final FoodAdapter foodsAdapter = new FoodAdapter(this, foods);//Initalize the adapter
         //Initialize the reference to the database
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Antonio").child("proteins");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Antonio").child("proteins");//Initialize the database reference
 
         //Adding all the values of foods into an array list so that we can populate our listview
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {//Query database for all the proteins
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Log.e("Running event listener","Inside");
-                for(DataSnapshot singleDataSnapshot: dataSnapshot.getChildren()){
+                for(DataSnapshot singleDataSnapshot: dataSnapshot.getChildren()){//Loop through all the proteins received from Firebase
 
-                    String foodIndex = singleDataSnapshot.getKey();
+                    String foodIndex = singleDataSnapshot.getKey();//Get the key of the foods obtained
                     //Log.e("Key",foodIndex);
-                    GlycaemicFoods glycaemicFoods = singleDataSnapshot.getValue(GlycaemicFoods.class);
+                    GlycaemicFoods glycaemicFoods = singleDataSnapshot.getValue(GlycaemicFoods.class);//Put the protein in the Glycaemic Foods class
 
                     Log.e("gIndex",glycaemicFoods.getBenefits());
-
+                    //Add food and its index to the glycaemic food class
                     GlycaemicFoodsWithIndex glycaemicFoodsWithIndex = new GlycaemicFoodsWithIndex(foodIndex,glycaemicFoods);
+                    //Check if the value of the proteins glycaemic index is greater than the value you want
                     if(glycaemicFoods.getGlycaemic_index() > setValue){
+
+                        //If the value is greater, add it to the list that you'll pass to the adapter, if not don't bother with it
                         foods.add(glycaemicFoodsWithIndex);
                         Log.e("index",String.valueOf(glycaemicFoods.getGlycaemic_index()));
                     }
 
                     Log.d("Firebase ValuesX",foodIndex + " " + glycaemicFoods.getFood_name() + " " + glycaemicFoods.getBenefits() + " " + glycaemicFoods.getCalories() + " " + glycaemicFoods.getGlycaemic_index());
 
+                    //Alert the adapter that we have some food :-)
                     foodsAdapter.notifyDataSetChanged();
                 }
-
-                //foodsAdapter.notifyDataSetChanged();
 
             }
 
@@ -91,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("databaseError",databaseError.toString());
             }
         });
-
+        //Initalize the recycler view - Please note that all these lines are critical especially the layout manager
         recyclerView = (RecyclerView)findViewById(R.id.indexRecycler);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(foodsAdapter);
+        recyclerView.setAdapter(foodsAdapter);//Set the adapter to the one you set
 
 
 
