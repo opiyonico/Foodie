@@ -16,6 +16,8 @@ public class GlycaemicFoodsWithIndex {
     public GlycaemicFoodsWithIndex(String index,GlycaemicFoods foods){
         this.food_name = foods.getFood_name();
         this.glycaemic_index = foods.getGlycaemic_index();
+        this.benefits = foods.getBenefits();
+        this.calories = foods.getCalories();
         this.local_name = foods.getLocal_name();
         this.foodIndex = index;
     }

@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private int setValue = 20;
     ListView foodList;
     FoodAdapter foodsAdapter;
+    RecyclerView recyclerView;
+    TextView header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +50,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        foods = new ArrayList<>();
+        header = (TextView)findViewById(R.id.header);
+        header.setText("Foods with Glycaemic Index > " + String.valueOf(setValue));
 
+        foods = new ArrayList<>();
+        final FoodAdapter foodsAdapter = new FoodAdapter(this, foods);
         //Initialize the reference to the database
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Antonio").child("proteins");
 
@@ -61,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     //Log.e("Key",foodIndex);
                     GlycaemicFoods glycaemicFoods = singleDataSnapshot.getValue(GlycaemicFoods.class);
 
-                    //Log.e("gIndex",glycaemicFoods.toString());
+                    Log.e("gIndex",glycaemicFoods.getBenefits());
 
                     GlycaemicFoodsWithIndex glycaemicFoodsWithIndex = new GlycaemicFoodsWithIndex(foodIndex,glycaemicFoods);
                     if(glycaemicFoods.getGlycaemic_index() > setValue){
@@ -70,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     Log.d("Firebase ValuesX",foodIndex + " " + glycaemicFoods.getFood_name() + " " + glycaemicFoods.getBenefits() + " " + glycaemicFoods.getCalories() + " " + glycaemicFoods.getGlycaemic_index());
+
+                    foodsAdapter.notifyDataSetChanged();
                 }
-                addFoods();
+
                 //foodsAdapter.notifyDataSetChanged();
 
             }
@@ -82,12 +92,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FoodAdapter foodsAdapter = new FoodAdapter(this, foods);
-
-
-        //Initialize the food listview
-        foodList = (ListView)findViewById(R.id.food_list_view);
-        foodList.setAdapter(foodsAdapter);
+        recyclerView = (RecyclerView)findViewById(R.id.indexRecycler);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(foodsAdapter);
 
 
 
@@ -98,10 +107,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,NewFood.class));
             }
         });
-    }
-
-    public void addFoods(){
-        foodsAdapter.addAll(foods);
     }
 
     @Override
